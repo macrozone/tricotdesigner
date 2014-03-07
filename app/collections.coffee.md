@@ -1,3 +1,3 @@
 	
 	
-	@Entities = new Meteor.Collection "entities"
+	@Elements = new Meteor.Collection "elements"
