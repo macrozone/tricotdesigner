@@ -1,23 +1,55 @@
 
 <head>
-	<meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 </head>
 <body>
 </body>
 
 
+
 <template name="layout">
-
-	{{yield}}
+    {{>header}}
+    {{yield}}
 </template>
 
-<template name="room">
-	<div class="container">
-		<h1>Room {{_id}}</h1>
-
-		<button class="addBox">add box</button>
-			<button class="addText">add text</button>
-		<div class="canvasContainer"></div>
-	</div>
+<template name="header">
+    <div class="navbar navbar-fixed-top navbar-inverse" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">My Bootstrap 3 App</a>
+            </div>
+            <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="/">Home</a></li>
+                    {{ loginButtons }}
+                </ul>
+            </div><!-- /.nav-collapse -->
+        </div><!-- /.container -->
+    </div>
 </template>
 
+<template name="home">
+    <div class="container">
+    <button type="button" class="btn btn-default btn-create-design">
+        <span class="glyphicon glyphicon-plus"></span> Create Design
+    </button>
+        </div>
+
+    {{>designList}}
+</template>
+
+
+<template name="designList">
+<ul>
+    {{#each designs}}
+    <li><a href="{{pathFor 'design'}}">{{_id}}</a></li>
+    {{/each}}
+</ul>
+
+</template>

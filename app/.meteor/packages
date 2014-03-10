@@ -11,3 +11,8 @@ stylus
 kinetic.js
 iron-router
 bootstrap-3
+accounts-facebook
+accounts-google
+accounts-base
+accounts-ui-bootstrap-3
+accounts-password

@@ -1,0 +1,47 @@
+
+<template name="design">
+	<div class="container">
+        {{#if design}}
+		<h1>Design {{_id}}</h1>
+
+		<button class="btn btn-default addBox">add box</button>
+		<button class="btn btn-default addText">add text</button>
+        <button class="btn btn-primary save">Save</button>
+
+        <div class="canvasContainer"></div>
+
+
+
+        {{>elementTable elements}}
+        {{else}}
+        <p>no design found</p>
+        {{/if}}
+    </div>
+
+</template>
+
+
+<template name="elementTable">
+    <div class="panel panel-primary">
+        <div class="panel-heading">Elements</div>
+
+
+        <table class="table table-striped">
+           <tr><th>Type</th><th>Content</th><th>Options</th></tr>
+            {{#each this}}
+                {{>oneElement this}}
+            {{/each}}
+        </table>
+    </div>
+</template>
+
+<template name="oneElement">
+    {{#unless fixed}}
+    <tr>
+        <td>{{type}}</td><td>{{text}}</td><td><button type="button" class="btn btn-default btn-remove">
+        <span class="glyphicon glyphicon-remove"></span> Delete
+    </button>
+    </td>
+    </tr>
+    {{/unless}}
+</template>
