@@ -6,9 +6,11 @@
 
 		<button class="btn btn-default addBox">add box</button>
 		<button class="btn btn-default addText">add text</button>
-        <button class="btn btn-primary save">Save</button>
-
-        <div class="canvasContainer"></div>
+        <button class="btn btn-default addImage">add Image</button>
+        <!--<button class="btn btn-primary save">Save</button>-->
+        {{#constant}}
+            <div class="canvasContainer"></div>
+        {{/constant}}
 
 
 
@@ -27,7 +29,7 @@
 
 
         <table class="table table-striped">
-           <tr><th>Type</th><th>Content</th><th>Options</th></tr>
+           <tr><th>Type</th><th>Content</th><th>x</th><th>y</th><th>Options</th></tr>
             {{#each this}}
                 {{>oneElement this}}
             {{/each}}
@@ -38,7 +40,7 @@
 <template name="oneElement">
     {{#unless fixed}}
     <tr>
-        <td>{{type}}</td><td>{{text}}</td><td><button type="button" class="btn btn-default btn-remove">
+        <td>{{type}}</td><td>{{text}}{{imageURL}}</td><td>{{x}}</td><td>{{y}}</td><td><button type="button" class="btn btn-default btn-remove">
         <span class="glyphicon glyphicon-remove"></span> Delete
     </button>
     </td>
