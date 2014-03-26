@@ -41,7 +41,7 @@ MAX_IMAGE_WIDTH = 300
       removed: onElementRemoved
 
   addElementHandles: (element) ->
-    element.on "dragend", ->
+    element.on "dragmove", ->
       ElementTools.saveChanges @
     element.on "click", (event) =>
       @onElementClick element, event
