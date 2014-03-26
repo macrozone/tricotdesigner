@@ -5,7 +5,6 @@ Template.design.events
         type: "Image"
         imageURL: inkBlob.url
         designID: @design._id
-        draggable: true
         x: 100
         y: 100
       Elements.insert element

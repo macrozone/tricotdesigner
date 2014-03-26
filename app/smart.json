@@ -4,6 +4,7 @@
     "iron-router": {},
     "bootstrap-3": {},
     "accounts-ui-bootstrap-3": {},
-    "loadpicker": {}
+    "loadpicker": {},
+    "npm": {}
   }
 }

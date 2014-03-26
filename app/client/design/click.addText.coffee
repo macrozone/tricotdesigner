@@ -8,7 +8,7 @@ Template.design.events
       fill: "red"
       stroke: "black"
       strokeWidth: 1
-      fontSize: 128
+      fontSize: 64
       fontFamily: "Helvetica Neue"
       textFill: "#000"
       align: "center"

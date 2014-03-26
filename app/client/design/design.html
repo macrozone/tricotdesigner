@@ -29,7 +29,7 @@
 
 
         <table class="table table-striped">
-           <tr><th>Type</th><th>Content</th><th>x</th><th>y</th><th>Options</th></tr>
+           <tr><th>ID</th><th>Type</th><th>Content</th><th>x</th><th>y</th><th>Options</th></tr>
             {{#each this}}
                 {{>oneElement this}}
             {{/each}}
@@ -40,7 +40,7 @@
 <template name="oneElement">
     {{#unless fixed}}
     <tr>
-        <td>{{type}}</td><td>{{text}}{{imageURL}}</td><td>{{x}}</td><td>{{y}}</td><td><button type="button" class="btn btn-default btn-remove">
+        <td>{{_id}}</td><td>{{type}}</td><td>{{text}}</td><td>{{x}}</td><td>{{y}}</td><td><button type="button" class="btn btn-default btn-remove">
         <span class="glyphicon glyphicon-remove"></span> Delete
     </button>
     </td>

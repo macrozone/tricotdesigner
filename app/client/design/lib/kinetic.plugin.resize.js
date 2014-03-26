@@ -14,7 +14,7 @@ Kinetic.Resizable = function(options) {
     yodaGroup.add(image);
     stage.add(layer);
     //Attach anchors
-    this.reSize = function(width,height){
+    this.init = function(width,height){
         addAnchor(yodaGroup, 0, 0, "topLeft");
         addAnchor(yodaGroup, width, 0, "topRight");
         addAnchor(yodaGroup, width, height, "bottomRight");
@@ -26,7 +26,7 @@ Kinetic.Resizable = function(options) {
     }
 
     var originalSetAttr = yodaGroup._setAttr;
-    that = this;
+    var that = this;
     yodaGroup._setAttr = function(key, value)
     {
         switch(key)
@@ -145,8 +145,10 @@ function addAnchor(group, x, y, name) {
         var anchor = new Kinetic.Circle({
           x: x,
           y: y,
-          stroke: '#666',
-          fill: '#ddd',
+          stroke: '#333',
+          fill: '#efefef',
+          fillAlpha: 0.75,
+          strokeAlpha: 0.75,
           strokeWidth: 1,
           radius: 8,
           name: name,
@@ -176,7 +178,7 @@ function addAnchor(group, x, y, name) {
         anchor.on('mouseout', function() {
           var layer = this.getLayer();
           document.body.style.cursor = 'default';
-          this.setStrokeWidth(2);
+          this.setStrokeWidth(1);
           layer.draw();
         });
 
