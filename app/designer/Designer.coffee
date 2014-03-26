@@ -116,7 +116,7 @@ MAX_IMAGE_WIDTH = 300
       y: y
 
     resizable.init element.getWidth(), element.getHeight()
-    resizable.group.on "dragend", ->
+    resizable.group.on "dragmove", ->
       ElementTools.saveChanges element, x: @getX(), y: @getY()
 
 
