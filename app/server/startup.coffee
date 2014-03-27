@@ -1,4 +1,4 @@
-
+Facts.setUserIdFilter -> true
 Meteor.startup ->
   if Elements.find().count() == 0
     Elements.insert x: 100, y: 100, designID: "test"
