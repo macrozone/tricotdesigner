@@ -12,7 +12,7 @@ saveChanges = _.debounce (element, overrideValues) ->
       $set[key] = value
   console.log $set
   Elements.update {_id: element.getId()}, {$set: $set}
-, 100
+, 10
 
 BaseEditor = class
 
