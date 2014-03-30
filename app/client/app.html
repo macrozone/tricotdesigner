@@ -9,8 +9,8 @@
 
 <template name="layout">
     {{>header}}
-    {{yield}}
- 
+    {{>yield}}
+    
 </template>
 
 <template name="header">
@@ -37,28 +37,28 @@
 
 <template name="home">
     <div class="container">
-    <div class="jumbotron">
-    <h1>Tricot Designer - Prototype</h1>
-    <p>create a new Design:</p>
-    
-    <button type="button" class="btn btn-default btn-create-design">
-        <span class="glyphicon glyphicon-plus"></span> Create Design
-    </button>
+        <div class="jumbotron">
+            <h1>Tricot Designer - Prototype</h1>
+            <p>create a new Design:</p>
+            
+            <button type="button" class="btn btn-default btn-create-design">
+                <span class="glyphicon glyphicon-plus"></span> Create Design
+            </button>
+
+        </div>
+        
+        <h3>All designs</h3>
+        {{>designList}}
 
     </div>
-     
-    <h3>All designs</h3>
-    {{>designList}}
-
-       </div>
 </template>
 
 
 <template name="designList">
-<ul>
-    {{#each designs}}
-    <li><a href="{{pathFor 'design'}}">Design {{_id}}</a></li>
-    {{/each}}
-</ul>
+    <ul>
+        {{#each designs}}
+        <li><a href="{{pathFor 'design'}}">Design {{_id}}</a></li>
+        {{/each}}
+    </ul>
 
 </template>

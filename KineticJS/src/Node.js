@@ -172,22 +172,17 @@
                 origTransEnabled = this.transformsEnabled(),
                 origX = this.x(),
                 origY = this.y(),
-                sceneContext;
+                sceneContext = cachedSceneCanvas.getContext(),
+                hitContext = cachedHitCanvas.getContext();
 
             this.clearCache();
-
-            var layerApplyTrans = layer._applyTransform;
-            layer._applyTransform = function(shape, context) {
-                context.translate(x * -1, y * -1);
-            };
-
-            this.drawScene(cachedSceneCanvas);
-            this.drawHit(cachedHitCanvas);
+   
+            sceneContext.save();
+            hitContext.save();
 
             // this will draw a red border around the cached box for
             // debugging purposes
-            if (drawBorder) {
-                sceneContext = cachedSceneCanvas.getContext();
+            if (drawBorder) {        
                 sceneContext.save();
                 sceneContext.beginPath();
                 sceneContext.rect(0, 0, width, height);
@@ -198,9 +193,19 @@
                 sceneContext.restore();
             }
 
-            // set the _applyTransform method back to the original
-            layer._applyTransform = layerApplyTrans;
-            
+            sceneContext.translate(x * -1, y * -1);
+            hitContext.translate(x * -1, y * -1);
+
+            if (this.nodeType === 'Shape') {
+                sceneContext.translate(this.x() * -1, this.y() * -1);
+                hitContext.translate(this.x() * -1, this.y() * -1);        
+            }
+
+            this.drawScene(cachedSceneCanvas, this);
+            this.drawHit(cachedHitCanvas, this);
+
+            sceneContext.restore();
+            hitContext.restore();
 
             this._cache.canvas = {
                 scene: cachedSceneCanvas,
@@ -284,7 +289,7 @@
          *
          * // get the target node<br>
          * node.on('click', function(evt) {<br>
-         *   console.log(evt.targetNode);<br>
+         *   console.log(evt.target);<br>
          * });<br><br>
          *
          * // stop event propagation<br>
@@ -300,6 +305,22 @@
          * // namespace listener<br>
          * node.on('click.foo', function() {<br>
          *   console.log('you clicked/touched me!');<br>
+         * });<br><br>
+         *
+         * // get the event type<br>
+         * node.on('click tap', function(evt) {<br>
+         *   var eventType = evt.type;<br>
+         * });<br><br>
+         *
+         * // get native event object<br>
+         * node.on('click tap', function(evt) {<br>
+         *   var nativeEvent = evt.evt;<br>
+         * });<br><br>
+         *
+         * // for change events, get the old and new val<br>
+         * node.on('xChange', function(evt) {<br>
+         *   var oldVal = evt.oldVal;<br>
+         *   var newVal = evt.newVal;<br>
          * });
          */
         on: function(evtStr, handler) {
@@ -387,13 +408,20 @@
             }
             return this;
         },
-        // some event aliases for third party integration like HammerJS 
+        // some event aliases for third party integration like HammerJS
         dispatchEvent: function(evt) {
-            evt.targetNode = this;
-            this.fire(evt.type, evt);
+            var e = {
+              target: this,
+              type: evt.type,
+              evt: evt
+            };
+            this.fire(evt.type, e);
         },
-        addEventListener: function() {
-            this.on.apply(this, arguments);
+        addEventListener: function(type, handler) {
+            // we to pass native event to handler
+            this.on(type, function(evt){
+                handler.call(this, evt.evt);
+            });
         },
         /**
          * remove self from parent, but don't destroy
@@ -830,16 +858,22 @@
             this.setPosition({x:x, y:y});
             return this;
         },
-        _eachAncestorReverse: function(func, includeSelf) {
+        _eachAncestorReverse: function(func, top) {
             var family = [],
                 parent = this.getParent(),
                 len, n;
 
-            // build family by traversing ancestors
-            if(includeSelf) {
-                family.unshift(this);
+            // if top node is defined, and this node is top node,
+            // there's no need to build a family tree.  just execute
+            // func with this because it will be the only node
+            if (top && top._id === this._id) {
+                func(this);
+                return true;
             }
-            while(parent) {
+
+            family.unshift(this);
+
+            while(parent && (!top || parent._id !== top._id)) {
                 family.unshift(parent);
                 parent = parent.parent;
             }
@@ -1108,10 +1142,17 @@
          * @memberof Kinetic.Node.prototype
          * @returns {Kinetic.Transform}
          */
-        getAbsoluteTransform: function() {
-            return this._getCache(ABSOLUTE_TRANSFORM, this._getAbsoluteTransform);
+        getAbsoluteTransform: function(top) {
+            // if using an argument, we can't cache the result.
+            if (top) {
+                return this._getAbsoluteTransform(top); 
+            }
+            // if no argument, we can cache the result
+            else {
+                return this._getCache(ABSOLUTE_TRANSFORM, this._getAbsoluteTransform);
+            }
         },
-        _getAbsoluteTransform: function() {
+        _getAbsoluteTransform: function(top) {
             var at = new Kinetic.Transform(),
                 transformsEnabled, trans;
 
@@ -1126,7 +1167,7 @@
                 else if (transformsEnabled === 'position') {
                     at.translate(node.x(), node.y());
                 }
-            }, true);
+            }, top);
             return at;
         },
         /**
@@ -1142,7 +1183,7 @@
             var m = new Kinetic.Transform(),
                 x = this.getX(),
                 y = this.getY(),
-                rotation = this.getRotation() * Math.PI / 180,
+                rotation = Kinetic.getAngle(this.getRotation()),
                 scaleX = this.getScaleX(),
                 scaleY = this.getScaleY(),
                 skewX = this.getSkewX(),
@@ -1295,26 +1336,11 @@
                 config.callback(img);
             });
         },
-        /**
-         * set size
-         * @method
-         * @memberof Kinetic.Node.prototype
-         * @param {Object} size
-         * @param {Number} size.width
-         * @param {Number} size.height
-         * @returns {Kinetic.Node}
-         */
         setSize: function(size) {
             this.setWidth(size.width);
             this.setHeight(size.height);
             return this;
         },
-        /**
-         * get size
-         * @method
-         * @memberof Kinetic.Node.prototype
-         * @returns {Object}
-         */
         getSize: function() {
             return {
                 width: this.getWidth(),
@@ -1390,12 +1416,6 @@
                 }
             }
         },
-        _fireBeforeChangeEvent: function(attr, oldVal, newVal) {
-            this._fire([BEFORE, Kinetic.Util._capitalize(attr), CHANGE].join(EMPTY_STRING), {
-                oldVal: oldVal,
-                newVal: newVal
-            });
-        },
         _fireChangeEvent: function(attr, oldVal, newVal) {
             this._fire(attr + CHANGE, {
                 oldVal: oldVal,
@@ -1469,7 +1489,6 @@
                     this.attrs[key] = this.getAttr(key);
                 }
                 
-                //this._fireBeforeChangeEvent(key, oldVal, val);
                 this.attrs[key][component] = val;
                 this._fireChangeEvent(key, oldVal, val);
             }
@@ -1478,7 +1497,7 @@
             var okayToRun = true;
 
             if(evt && this.nodeType === SHAPE) {
-                evt.targetNode = this;
+                evt.target = this;
             }
 
             if(eventType === MOUSEENTER && compareShape && this._id === compareShape._id) {
@@ -1505,6 +1524,8 @@
         _fire: function(eventType, evt) {
             var events = this.eventListeners[eventType],
                 i;
+
+            evt.type = eventType;
 
             if (events) {
                 for(i = 0; i < events.length; i++) {
@@ -2001,6 +2022,31 @@
      * // enable all transforms<br>
      * node.transformsEnabled('all');
      */
+
+
+
+    /**
+     * get/set node size
+     * @name size
+     * @method
+     * @memberof Kinetic.Node.prototype
+     * @param {Object} size
+     * @param {Number} size.width
+     * @param {Number} size.height
+     * @returns {Object}
+     * @example
+     * // get node size<br>
+     * var size = node.size();<br>
+     * var x = size.x;<br>
+     * var y = size.y;<br><br>
+     *
+     * // set size<br>
+     * node.size({<br>
+     *   width: 100,<br>
+     *   height: 200<br>
+     * });
+     */
+    Kinetic.Factory.addOverloadedGetterSetter(Kinetic.Node, 'size');
 
     Kinetic.Factory.backCompat(Kinetic.Node, {
         rotateDeg: 'rotate',

@@ -9,10 +9,9 @@
 		<button class="btn btn-default addText">add text</button>
         <button class="btn btn-default addImage">add Image</button>
         <!--<button class="btn btn-primary save">Save</button>-->
-        {{#constant}}
-            <div class="canvasContainer"></div>
-        {{/constant}}
-
+        
+        <div class="canvasContainer"></div>
+        
 
 
         {{>elementTable elements}}
@@ -30,7 +29,9 @@
 
 
         <table class="table table-striped">
+        <thead>
            <tr><th>ID</th><th>Type</th><th>Content</th><th>x</th><th>y</th><th>Options</th></tr>
+           </thead>
             {{#each this}}
                 {{>oneElement this}}
             {{/each}}

@@ -3,8 +3,12 @@
     "kinetic.js": {},
     "iron-router": {},
     "bootstrap-3": {},
-    "accounts-ui-bootstrap-3": {},
     "loadpicker": {},
-    "npm": {}
+    "accounts-ui-bootstrap-3-blaze": {},
+    "kinetic.js.server":
+    {
+    	"path": "../kinetic.js.server"
+    }
+
   }
 }

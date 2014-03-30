@@ -1,0 +1,1 @@
+Kinetic = Npm.require("KineticJS");

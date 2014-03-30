@@ -34,6 +34,7 @@ module.exports = function(grunt) {
     'src/Container.js',
     'src/Shape.js',
     'src/Stage.js',
+    'src/BaseLayer.js',
     'src/Layer.js',
     'src/FastLayer.js',
     'src/Group.js',
@@ -204,7 +205,7 @@ module.exports = function(grunt) {
                 stderr : true,
                 failOnError : true
             },
-            command: './node_modules/.bin/jsdoc ./dist/kinetic-v<%= pkg.version %>.js -d ./documentation'
+            command: './node_modules/.bin/jsdoc ./dist/kinetic-v<%= pkg.version %>.js -d ./docs'
         }
     },
     mocha_phantomjs: {
@@ -248,7 +249,7 @@ module.exports = function(grunt) {
     'copy:prod2'
   ]);
 
-  grunt.registerTask('docs', 'Generate documentation to documentation folder', [
+  grunt.registerTask('docs', 'Generate docs', [
     'full',
     'shell:jsdoc',
   ]);

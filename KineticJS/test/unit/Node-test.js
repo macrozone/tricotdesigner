@@ -2759,6 +2759,11 @@ suite('Node', function() {
     circle.position({x: 6, y: 8});
     assert.equal(circle.position().x, 6);
     assert.equal(circle.position().y, 8);
+
+    // because the height was set to 11, the width
+    // is also 11 because the node is a circle
+    assert.equal(circle.size().width, 11);
+    assert.equal(circle.size().height, 11);
   });
 
   test('cache shape', function(){
@@ -2855,7 +2860,7 @@ suite('Node', function() {
     showHit(layer)
                                         
     assert.equal(layer.getContext().getTrace(), 'clearRect(0,0,578,200);save();transform(1,0,0,1,124,124);beginPath();arc(0,0,70,0,6.283,false);closePath();fillStyle=green;fill();lineWidth=4;strokeStyle=black;stroke();restore();clearRect(0,0,578,200);save();transform(1,0,0,1,50,50);drawImage([object HTMLCanvasElement],0,0);restore();');
-    assert.equal(circle._cache.canvas.scene.getContext().getTrace(), 'save();translate(74,74);beginPath();arc(0,0,70,0,6.283,false);closePath();fillStyle=green;fill();lineWidth=4;strokeStyle=black;stroke();restore();');
+    assert.equal(circle._cache.canvas.scene.getContext().getTrace(), 'save();translate(74,74);translate(-74,-74);save();transform(1,0,0,1,74,74);beginPath();arc(0,0,70,0,6.283,false);closePath();fillStyle=green;fill();lineWidth=4;strokeStyle=black;stroke();restore();restore();');
   });
 
   test('cache shape thats larger than stage', function(){
@@ -2898,7 +2903,7 @@ suite('Node', function() {
     var layer = new Kinetic.Layer();
     var group = new Kinetic.Group();
     var circle = new Kinetic.Circle({
-        x: 74,
+        x: 200,
         y: 74,
         radius: 70,
         fill: 'green',
@@ -2937,7 +2942,7 @@ suite('Node', function() {
     //console.log(circle._cache.canvas.scene.getContext().getTrace());
 
     // make sure the border rectangle was drawn onto the cached scene canvas
-    //assert.equal(circle._cache.canvas.scene.getContext().getTrace(),'save();translate(74,74);beginPath();arc(0,0,70,0,6.283,false);closePath();fillStyle=green;fill();lineWidth=4;strokeStyle=black;stroke();restore();save();beginPath();rect(0,0,148,148);closePath();strokeStyle=red;lineWidth=5;stroke();restore();');
+    assert.equal(circle._cache.canvas.scene.getContext().getTrace(),'save();save();beginPath();rect(0,0,148,148);closePath();strokeStyle=red;lineWidth=5;stroke();restore();translate(74,74);translate(-200,-74);save();transform(1,0,0,1,200,74);beginPath();arc(0,0,70,0,6.283,false);closePath();fillStyle=green;fill();lineWidth=4;strokeStyle=black;stroke();restore();restore();');
   });
 
   test('cache group', function(){
