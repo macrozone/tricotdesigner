@@ -4,11 +4,13 @@
     "iron-router": {},
     "bootstrap-3": {},
     "loadpicker": {},
+    "filepicker.server": {
+      "path": "../filepicker.server"
+    },
     "accounts-ui-bootstrap-3-blaze": {},
-    "kinetic.js.server":
-    {
-    	"path": "../kinetic.js.server"
-    }
-
+    "kinetic.js.server": {
+      "path": "../kinetic.js.server"
+    },
+    "collectionFS": {}
   }
 }

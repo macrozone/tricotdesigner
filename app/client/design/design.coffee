@@ -1,19 +1,23 @@
 
 
-FILEPICKER_KEY = "AZn7jUYrTzGpTqACG1LLFz"
-
 
 initTemplate = (template) ->
-
-	filepicker.setKey FILEPICKER_KEY
 	container = template.find ".canvasContainer"
+	settings = 
+		container: container
+		interactive: true
+		scaleFactor: 1
+		width: Meteor.settings.public.canvas.width
+		height: Meteor.settings.public.canvas.height
+	filepicker.setKey Meteor.settings.public.filepicker
+		
+	
 	$(container).css "transform-origin", "0 0"
-	$(container).width Settings.width
-	$(container).height Settings.height
-	$(container).css "transform", "scale(#{1/Settings.scaleFactor})"
-	settings = Settings
-	settings.container = container
-	settings.interactive = true
+	$(container).width settings.width
+	$(container).height settings.height
+	$(container).css "transform", "scale(#{1/settings.scaleFactor})"
+
+	
 
 	designer = new Designer settings
 	designer.init template.data.elements

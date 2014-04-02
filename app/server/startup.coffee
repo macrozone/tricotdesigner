@@ -1,3 +1,5 @@
+Future = Npm.require('fibers/future');
+filepicker = new Filepicker Meteor.settings.public.filepicker
 Facts.setUserIdFilter -> true
 Meteor.startup ->
 	if Elements.find().count() == 0
@@ -10,28 +12,25 @@ Meteor.startup ->
 
 
 
-
 	
 
 Meteor.methods
-	"renderImage": (designID) ->
+	"save": (designID) ->
+
+		future = new Future()
+		@unblock()
 
 		settings =
-		width: 800
-		height: 400
-		scaleFactor: 8
-	
+			width: Meteor.settings.public.canvas.width
+			height: Meteor.settings.public.canvas.height
+			scaleFactor: Meteor.settings.public.canvas.saveScaleFactor
+
 		elements = Elements.find designID: designID
 		fs = Npm.require('fs')
 		path = Npm.require('path')
 		designer = new Designer settings
-		designer.init elements, ->
-			designer.toDataURL (data)->
-				base64Data = data.replace(/^data:image\/png;base64,/, "")
-				file = path.resolve "./design_#{designID}.png"
-				fs.writeFile file, base64Data, "base64", (err) ->
-					console.log err
-
-				
-	
+		designer.init elements, Meteor.bindEnvironment ->
+			designer.toDataURL Meteor.bindEnvironment (data) ->
+				future['return'] data
 		
+		future.wait()

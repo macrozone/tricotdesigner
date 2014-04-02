@@ -16,5 +16,8 @@ accounts-base
 accounts-password
 loadpicker
 facts
-npm
 kinetic.js.server
+appcache
+filepicker.server
+collectionFS
+cfs-filesystem
